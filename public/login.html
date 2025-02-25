@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Notes</title>
+    <style>
+        :root {
+            --primary-color: #fbbc04;
+            --border-color: #e0e0e0;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .auth-button {
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <h2>Login to Notes</h2>
+    <form id="login-form" class="auth-form">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="auth-button">Login</button>
+    </form>
+    <p class="auth-link">
+        Don't have an account? <a href="/register.html">Register</a>
+    </p>
+</div>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email, password})
+            });
+
+            if (!response.ok) throw new Error('Login failed');
+
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            window.location.href = 'index.html';
+        } catch (error) {
+            alert('Login failed. Please check your credentials.');
+        }
+    });
+</script>
+</body>
+</html>
